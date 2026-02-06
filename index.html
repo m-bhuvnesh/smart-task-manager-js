@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>Smart Task Manager</title>
-    <!-- <style>
-     
-    </style> -->
   </head>
   <body>
     <div class="app">
@@ -17,45 +14,25 @@
       </div>
 
       <div class="input-area">
-        <input type="text" placeholder="Enter a task" />
-        <button>Add</button>
+        <input type="text" id="taskInput" placeholder="Enter a task" />
+        <span class="errorMsg">please enter task</span>
+        <button id="addBtn">Add</button>
       </div>
 
       <div class="filters">
-        <button class="active">All</button>
-        <button>Todo</button>
-        <button>InProgress</button>
-        <button>Complete</button>
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="Todo">Todo</button>
+        <button data-filter="InProgress">InProgress</button>
+        <button data-filter="Complete">Complete</button>
       </div>
 
-      <div class="tasks">
-        <div class="task">
-          <div class="task-left">
-            <span>Review project proposal</span>
-          </div>
-          <select>
-            <option>Todo</option>
-            <option>InProgress</option>
-            <option>Complete</option>
-          </select>
-        </div>
-
-        <div class="task completed">
-          <div class="task-left">
-            <span>Schedule team meeting</span>
-          </div>
-          <select>
-            <option>Complete</option>
-            <option>Todo</option>
-            <option>InProgress</option>
-          </select>
-        </div>
-      </div>
+      <div class="tasks"></div>
 
       <div class="footer">
-        <span>Total: 2</span>
-        <span>Completed: 1</span>
+        <span id="totalTask">Total: 0</span>
+        <span id="totalCompletedTask">Completed: 0</span>
       </div>
     </div>
   </body>
+  <script src="./script.js"></script>
 </html>
