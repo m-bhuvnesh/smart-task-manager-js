@@ -4,7 +4,8 @@ const errorMsg = document.getElementsByClassName("errorMsg")[0];
 const totalTask = document.getElementById("totalTask");
 const completedTask = document.getElementById("totalCompletedTask");
 const tasksContainer = document.querySelector(".tasks");
-
+const searchInput = document.getElementById("searchInput");
+const emptyState = document.getElementById("emptyState");
 let currentFilter = "all";
 
 /* ---------------- ADD TASK ---------------- */
@@ -58,6 +59,11 @@ addBtn.addEventListener("click", () => {
 
   taskInput.value = "";
 
+  if (!emptyState.classList.contains("hidden")) {
+    emptyState.textContent = "";
+    emptyState.classList.add("hidden");
+    searchInput.value = "";
+  }
   updateCounts();
   applyFilter();
 });
@@ -111,3 +117,76 @@ function applyFilter() {
     }
   });
 }
+
+/* ---------------- DEBOUNCE ---------------- */
+
+function debounce(fn, delay = 300) {
+  let timer;
+
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
+/* ---------------- SEARCH ---------------- */
+
+function searchTask(query) {
+  const tasks = tasksContainer.querySelectorAll(".task");
+
+  if (!query.trim()) {
+    tasks.forEach((task) => (task.style.display = "flex"));
+    updateEmptyTaskState();
+    return;
+  }
+
+  let visibleCount = 0;
+  const lowerQuery = query.toLowerCase();
+
+  tasks.forEach((task) => {
+    const textEl = task.querySelector(".task-left span");
+    if (!textEl) return;
+
+    const isVisible = textEl.textContent.toLowerCase().includes(lowerQuery);
+
+    task.style.display = isVisible ? "flex" : "none";
+    if (isVisible) visibleCount++;
+  });
+
+  if (tasks.length > 0 && visibleCount === 0) {
+    emptyState.textContent = "🔍 No matching tasks found";
+    emptyState.classList.remove("hidden");
+  } else {
+    updateEmptyTaskState();
+  }
+}
+
+const debouncedSearch = debounce(searchTask, 300);
+
+function handleSearch(e) {
+  debouncedSearch(e.target.value);
+}
+
+searchInput.addEventListener("input", handleSearch);
+
+/* ---------------- CLEANUP ---------------- */
+
+window.addEventListener("beforeunload", () => {
+  searchInput.removeEventListener("input", handleSearch);
+});
+
+/* ---------------- MANAGE EMPTY STATE ---------------- */
+
+function updateEmptyTaskState() {
+  const totalTasks = tasksContainer.children.length;
+
+  if (totalTasks === 0) {
+    emptyState.textContent = "📝 No tasks yet";
+    emptyState.classList.remove("hidden");
+  } else {
+    emptyState.classList.add("hidden");
+  }
+}
+

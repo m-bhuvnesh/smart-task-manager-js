@@ -8,25 +8,37 @@
   </head>
   <body>
     <div class="app">
-      <div class="header">
-        <h1>Smart Task Manager</h1>
-        <p>Organize your day efficiently</p>
-      </div>
+      <div class="app-header">
+        <div class="header">
+          <h1>Smart Task Manager</h1>
+          <p>Organize your day efficiently</p>
+        </div>
 
-      <div class="input-area">
-        <input type="text" id="taskInput" placeholder="Enter a task" />
-        <span class="errorMsg">please enter task</span>
-        <button id="addBtn">Add</button>
-      </div>
+        <div class="input-area">
+          <input type="text" id="taskInput" placeholder="Enter a task" />
+          <span class="errorMsg">please enter task</span>
+          <button id="addBtn">Add</button>
+        </div>
 
-      <div class="filters">
-        <button class="active" data-filter="all">All</button>
-        <button data-filter="Todo">Todo</button>
-        <button data-filter="InProgress">InProgress</button>
-        <button data-filter="Complete">Complete</button>
-      </div>
+        <div class="search-wrapper">
+          <input type="text" id="searchInput" placeholder="Search tasks..." />
+        </div>
 
-      <div class="tasks"></div>
+        <div class="empty-state hidden" id="emptyState">
+          <p>📝 No tasks yet</p>
+          <span>Add your first task above</span>
+        </div>
+
+        <div class="filters">
+          <button class="active" data-filter="all">All</button>
+          <button data-filter="Todo">Todo</button>
+          <button data-filter="InProgress">InProgress</button>
+          <button data-filter="Complete">Complete</button>
+        </div>
+      </div>
+      <div class="tasks-container" id="tasksContainer">
+        <div class="tasks"></div>
+      </div>
 
       <div class="footer">
         <span id="totalTask">Total: 0</span>
