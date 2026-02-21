@@ -6,6 +6,7 @@ const completedTask = document.getElementById("totalCompletedTask");
 const tasksContainer = document.querySelector(".tasks");
 const searchInput = document.getElementById("searchInput");
 const emptyState = document.getElementById("emptyState");
+const taskListsContainer = document.getElementById("tasksContainer");
 let currentFilter = "all";
 
 /* ---------------- ADD TASK ---------------- */
@@ -64,6 +65,7 @@ addBtn.addEventListener("click", () => {
     emptyState.classList.add("hidden");
     searchInput.value = "";
   }
+
   updateCounts();
   applyFilter();
 });
@@ -119,7 +121,6 @@ function applyFilter() {
 }
 
 /* ---------------- DEBOUNCE ---------------- */
-
 function debounce(fn, delay = 300) {
   let timer;
 
@@ -132,7 +133,6 @@ function debounce(fn, delay = 300) {
 }
 
 /* ---------------- SEARCH ---------------- */
-
 function searchTask(query) {
   const tasks = tasksContainer.querySelectorAll(".task");
 
@@ -150,7 +150,6 @@ function searchTask(query) {
     if (!textEl) return;
 
     const isVisible = textEl.textContent.toLowerCase().includes(lowerQuery);
-
     task.style.display = isVisible ? "flex" : "none";
     if (isVisible) visibleCount++;
   });
@@ -171,14 +170,7 @@ function handleSearch(e) {
 
 searchInput.addEventListener("input", handleSearch);
 
-/* ---------------- CLEANUP ---------------- */
-
-window.addEventListener("beforeunload", () => {
-  searchInput.removeEventListener("input", handleSearch);
-});
-
-/* ---------------- MANAGE EMPTY STATE ---------------- */
-
+/* ---------------- EMPTY STATE ---------------- */
 function updateEmptyTaskState() {
   const totalTasks = tasksContainer.children.length;
 
@@ -190,3 +182,37 @@ function updateEmptyTaskState() {
   }
 }
 
+/* ---------------- THROTTLE ---------------- */
+function throttle(fn, delay = 200) {
+  let lastCall = 0;
+
+  return function (...args) {
+    const now = Date.now();
+    if (now - lastCall >= delay) {
+      lastCall = now;
+      fn.apply(this, args);
+    }
+  };
+}
+
+function handleScroll() {
+  const { scrollTop, scrollHeight, clientHeight } = taskListsContainer;
+
+  if (scrollTop + clientHeight >= scrollHeight - 5) {
+    console.log("Reached bottom");
+  }
+}
+
+const throttledScroll = throttle(handleScroll, 200);
+taskListsContainer.addEventListener("scroll", throttledScroll);
+
+/* ---------------- CLEANUP ---------------- */
+function cleanupScroll() {
+  taskListsContainer.removeEventListener("scroll", throttledScroll);
+}
+
+/* --- PAGE UNLOAD CLEANUP --- */
+window.addEventListener("beforeunload", () => {
+  searchInput.removeEventListener("input", handleSearch);
+  cleanupScroll();
+});
